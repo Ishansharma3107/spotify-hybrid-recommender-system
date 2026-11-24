@@ -28,5 +28,7 @@ jobs:
       - run: docker build -t spotify-hybrid-ci .
       - run: |
           docker run -d --name spotify-hybrid-ci -p 127.0.0.1:8000:8000 spotify-hybrid-ci
-          curl --fail --retry 20 --retry-connrefused --retry-delay 1 http://127.0.0.1:8000/_stcore/health
+          sleep 10
+          docker ps -a
           docker logs spotify-hybrid-ci
+          curl --fail --retry 20 --retry-connrefused --retry-delay 1 http://127.0.0.1:8000/_stcore/health
