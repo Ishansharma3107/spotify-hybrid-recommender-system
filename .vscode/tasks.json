@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "tasks": [{
+    "label": "Start Spotify Recommender",
+    "type": "process",
+    "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+    "args": ["-m", "streamlit", "run", "app.py", "--server.address=127.0.0.1", "--server.port=8501", "--server.headless=true"],
+    "options": {"cwd": "${workspaceFolder}"},
+    "group": {"kind": "build", "isDefault": true},
+    "problemMatcher": []
+  }]
+}

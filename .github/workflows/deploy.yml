@@ -1,0 +1,40 @@
+name: Optional AWS deployment
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: aws
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+      REVISION_BUCKET: ${{ vars.REVISION_BUCKET }}
+      CODEDEPLOY_APP: ${{ vars.CODEDEPLOY_APP }}
+      CODEDEPLOY_GROUP: ${{ vars.CODEDEPLOY_GROUP }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Build and publish an immutable revision
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+        run: |
+          set -euo pipefail
+          image="$REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA"
+          docker build -t "$image" .
+          docker push "$image"
+          digest=$(aws ecr describe-images --repository-name "$ECR_REPOSITORY" --image-ids "imageTag=$GITHUB_SHA" --query 'imageDetails[0].imageDigest' --output text)
+          [[ $digest =~ ^sha256:[a-f0-9]{64}$ ]]
+          printf 'IMAGE=%s\nAWS_REGION=%s\n' "$REGISTRY/$ECR_REPOSITORY@$digest" "$AWS_REGION" > release.env
+          zip deployment.zip appspec.yml release.env deploy/scripts/*.sh
+          key="spotify/$GITHUB_SHA/$GITHUB_RUN_ATTEMPT.zip"
+          aws s3 cp deployment.zip "s3://$REVISION_BUCKET/$key"
+          deployment=$(aws deploy create-deployment --application-name "$CODEDEPLOY_APP" --deployment-group-name "$CODEDEPLOY_GROUP" --s3-location "bucket=$REVISION_BUCKET,key=$key,bundleType=zip" --query deploymentId --output text)
+          aws deploy wait deployment-successful --deployment-id "$deployment"

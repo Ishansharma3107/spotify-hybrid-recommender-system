@@ -1,0 +1,39 @@
+stages:
+  preprocess:
+    cmd: python -m src.local_pipeline preprocess
+    deps:
+      - src/local_pipeline.py
+      - src/recommender.py
+      - data/raw/Music Info.csv
+      - data/raw/User Listening History.csv
+    outs:
+      - data/local/catalog.csv
+      - data/local/listens.csv
+  audio_features:
+    cmd: python -m src.local_pipeline features
+    deps:
+      - src/local_pipeline.py
+      - data/local/catalog.csv
+      - requirements-app.txt
+    outs:
+      - data/local/audio.npy
+  train:
+    cmd: python -m src.local_pipeline train
+    deps:
+      - src/local_pipeline.py
+      - data/local/catalog.csv
+      - data/local/listens.csv
+      - requirements-app.txt
+    outs:
+      - data/local/interactions.npz
+  evaluate:
+    cmd: python -m src.local_pipeline evaluate
+    deps:
+      - src/local_pipeline.py
+      - src/recommender.py
+      - data/local/listens.csv
+      - data/local/audio.npy
+      - data/local/interactions.npz
+    metrics:
+      - reports/model_metrics.json:
+          cache: false

@@ -1,0 +1,102 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python -m src.local_pipeline preprocess
+    deps:
+    - path: data/raw/Music Info.csv
+      hash: md5
+      md5: e63b74919a3cdada5c804df4666391c9
+      size: 14985870
+    - path: data/raw/User Listening History.csv
+      hash: md5
+      md5: 3a12e713844195171c7040c051d6d4ae
+      size: 602515573
+    - path: src/local_pipeline.py
+      hash: md5
+      md5: 5dca13206f41f97989ca921f23c4c77a
+      size: 6346
+    - path: src/recommender.py
+      hash: md5
+      md5: 283bfc5a2937f8d29be14deeee391545
+      size: 3049
+    outs:
+    - path: data/local/catalog.csv
+      hash: md5
+      md5: c05b788673f0eb18e7f0025e9422a469
+      size: 11705544
+    - path: data/local/listens.csv
+      hash: md5
+      md5: cae308f48bcd0763d93be1f830ac7fe8
+      size: 12091777
+  audio_features:
+    cmd: python -m src.local_pipeline features
+    deps:
+    - path: data/local/catalog.csv
+      hash: md5
+      md5: c05b788673f0eb18e7f0025e9422a469
+      size: 11705544
+    - path: requirements-app.txt
+      hash: md5
+      md5: a17506df088d7baa12487d00c5ba4aab
+      size: 94
+    - path: src/local_pipeline.py
+      hash: md5
+      md5: 5dca13206f41f97989ca921f23c4c77a
+      size: 6346
+    outs:
+    - path: data/local/audio.npy
+      hash: md5
+      md5: 2ca6a045fee9666668fd36428d838c67
+      size: 1824716
+  train:
+    cmd: python -m src.local_pipeline train
+    deps:
+    - path: data/local/catalog.csv
+      hash: md5
+      md5: c05b788673f0eb18e7f0025e9422a469
+      size: 11705544
+    - path: data/local/listens.csv
+      hash: md5
+      md5: cae308f48bcd0763d93be1f830ac7fe8
+      size: 12091777
+    - path: requirements-app.txt
+      hash: md5
+      md5: a17506df088d7baa12487d00c5ba4aab
+      size: 94
+    - path: src/local_pipeline.py
+      hash: md5
+      md5: 5dca13206f41f97989ca921f23c4c77a
+      size: 6346
+    outs:
+    - path: data/local/interactions.npz
+      hash: md5
+      md5: 2b8ae3f3b5e94499cabb24335ae32ecb
+      size: 563178
+  evaluate:
+    cmd: python -m src.local_pipeline evaluate
+    deps:
+    - path: data/local/audio.npy
+      hash: md5
+      md5: 2ca6a045fee9666668fd36428d838c67
+      size: 1824716
+    - path: data/local/interactions.npz
+      hash: md5
+      md5: 2b8ae3f3b5e94499cabb24335ae32ecb
+      size: 563178
+    - path: data/local/listens.csv
+      hash: md5
+      md5: cae308f48bcd0763d93be1f830ac7fe8
+      size: 12091777
+    - path: src/local_pipeline.py
+      hash: md5
+      md5: 5dca13206f41f97989ca921f23c4c77a
+      size: 6346
+    - path: src/recommender.py
+      hash: md5
+      md5: 283bfc5a2937f8d29be14deeee391545
+      size: 3049
+    outs:
+    - path: reports/model_metrics.json
+      hash: md5
+      md5: 72b9f6f11ec86486c1766fd5d9420ee9
+      size: 651

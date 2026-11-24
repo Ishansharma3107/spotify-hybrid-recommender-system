@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    image: spotify-hybrid-local
+    ports:
+      - "127.0.0.1:8001:8000"
+    volumes:
+      - ./data/local:/app/data/local:ro
+      - ./reports:/app/reports:ro
+      - feedback:/app/.runtime
+volumes:
+  feedback:
