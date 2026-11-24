@@ -11,8 +11,8 @@ jobs:
     env:
       SPOTIFY_NO_BROWSER: '1'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: pip
@@ -23,7 +23,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: docker compose config --quiet
       - run: docker build -t spotify-hybrid-ci .
       - run: |
@@ -32,3 +32,4 @@ jobs:
           docker ps -a
           docker logs spotify-hybrid-ci
           curl --fail --retry 20 --retry-connrefused --retry-delay 1 http://127.0.0.1:8000/_stcore/health
+
