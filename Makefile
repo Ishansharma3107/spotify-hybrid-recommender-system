@@ -27,7 +27,9 @@ requirements: test_environment
 
 ## Make Dataset
 data: requirements
-	$(PYTHON_INTERPRETER) src/data/make_dataset.py data/raw data/processed
+	$(PYTHON_INTERPRETER) -m src.local_pipeline acquire
+	$(PYTHON_INTERPRETER) -m dvc commit --no-relink "data/raw/Music Info.csv.dvc" "data/raw/User Listening History.csv.dvc"
+	$(PYTHON_INTERPRETER) -m dvc repro
 
 ## Delete all compiled Python files
 clean:

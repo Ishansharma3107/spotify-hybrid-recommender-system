@@ -6,6 +6,8 @@ import shutil
 import tempfile
 import urllib.request
 import zipfile
+from pathlib import Path
+from urllib.parse import quote
 
 import numpy as np
 import pandas as pd
@@ -30,16 +32,11 @@ def acquire():
         if target.exists():
             continue
         with tempfile.TemporaryDirectory(dir=RAW) as directory:
-            from pathlib import Path
             archive = Path(directory) / "download.zip"
             staged = Path(directory) / filename
-            local_archive = ROOT.parent / "work" / ("music.zip" if filename == MUSIC else "listening.zip")
-            if local_archive.is_file():
-                archive = local_archive
-            else:
-                with urllib.request.urlopen(SOURCE + urllib.parse.quote(filename), timeout=120) as response:
-                    with archive.open("wb") as output:
-                        shutil.copyfileobj(response, output)
+            with urllib.request.urlopen(SOURCE + quote(filename), timeout=120) as response:
+                with archive.open("wb") as output:
+                    shutil.copyfileobj(response, output)
             with zipfile.ZipFile(archive) as zipped, zipped.open(filename) as source:
                 with staged.open("wb") as output:
                     shutil.copyfileobj(source, output)

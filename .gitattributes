@@ -1,2 +1,7 @@
 *.sh text eol=lf
 *.bat text eol=crlf
+
+# Keep DVC dependency hashes stable across operating systems.
+requirements-app.txt text eol=lf
+src/local_pipeline.py text eol=lf
+src/recommender.py text eol=lf

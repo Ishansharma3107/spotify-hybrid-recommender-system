@@ -1,0 +1,5 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+  "chat.disableAIFeatures": true,
+  "chat.commandCenter.enabled": false
+}

@@ -14,6 +14,7 @@ python -m pip install -r requirements.txt || goto failed
 python -m pip check || goto failed
 python -m src.local_pipeline acquire || goto failed
 dvc config --local cache.dir >nul 2>&1 || dvc cache dir --local "%LocalAppData%\SpotifyHybrid\dvc-cache" || goto failed
+dvc commit --no-relink "data/raw/Music Info.csv.dvc" "data/raw/User Listening History.csv.dvc" || goto failed
 dvc repro || goto failed
 echo Setup finished. Double-click start.bat to open the app.
 exit /b 0
