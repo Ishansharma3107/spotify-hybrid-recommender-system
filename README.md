@@ -1,10 +1,8 @@
 # Spotify Hybrid Recommender System
 
-**Team lead** · Ishan Sharma
+Ishan Sharma
 
-Explore music using audio similarity, shared listening patterns, or a tunable blend of both. The Streamlit app runs on Windows with local data and model files.
-
-## Team improvements
+Explore music using audio similarity, shared listening patterns, or a tunable blend of both. The Streamlit app runs on Windows with local data and model file
 
 - Built eight Streamlit sections for recommendations, discovery, analytics, and model comparison.
 - Added track and artist search, genre and mood filters, popularity ranking, cold-start fallback, and recommendation explanations.
@@ -23,12 +21,3 @@ The app and recommendations work offline after setup. Audio previews may need in
 ## Evaluation
 
 The sample contains 50,683 tracks and 191,805 unique listener–track pairs. On 3,368 held-out profiles, Recall@10 was 8.67% for collaborative filtering, 8.58% for hybrid, 6.53% for popularity, and 0.06% for audio-only filtering. See the [evaluation metrics](reports/model_metrics.json) and [executed analysis notebook](notebooks/Local_Analysis.ipynb).
-
-## Documentation
-
-- [Windows setup](WINDOWS_SETUP_GUIDE.md)
-- [Architecture and algorithms](PROJECT_ARCHITECTURE.md)
-- [Troubleshooting](TROUBLESHOOTING.md)
-- [Final-year report](reports/FINAL_YEAR_PROJECT.md) and [viva questions](VIVA_QUESTIONS.md)
-- [Optional AWS deployment](deploy/README.md)
-- [Credits and data provenance](ATTRIBUTION.md)
